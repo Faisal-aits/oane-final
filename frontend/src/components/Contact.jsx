@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { CONTACT_DETAILS, PROJECT_TYPES } from '../constants/index.jsx';
 import { useParallax } from '../hooks/useParallax.js';
+import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
 export default function Contact() {
   const headRef = useRef(null);
@@ -31,7 +32,7 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="parallax-section bg-[#1A1A1A]"
+      className="parallax-section bg-[#1A1A1A] overflow-hidden"
     >
       {/* Background radial glow */}
       <motion.div
@@ -48,30 +49,25 @@ export default function Contact() {
       <motion.div style={{ y: contentY }} className="relative z-10 section-pad max-w-[1440px] mx-auto">
         {/* Header */}
         <div ref={headRef} className="mb-16">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={headVisible ? { opacity: 1, y: 0 } : {}}
-            className="section-label block mb-6"
-          >
-            Contact
-          </motion.span>
+          <div className="mb-6">
+            <InsideOutText
+              text="Contact"
+              className="section-label block"
+            />
+          </div>
         </div>
 
         {/* Two-column layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
-          {/* ... (rest of the component stays same) */}
+          
           {/* Left: copy + contact details */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={headVisible ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.2, duration: 0.85, ease: [0.76, 0, 0.24, 1] }}
-          >
+          <InsideOutElement delay={0.2} className="flex flex-col">
             <h2
               className="font-poppins font-semibold text-white mb-6 leading-tight"
-              style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}
+              style={{ fontSize: 'clamp(1.6rem, 4vw, 3rem)' }}
             >
-              Let's talk<br />
-              <span className="text-[#DE3B2B]">about light.</span>
+              <InsideOutText text="Let's talk" className="block text-white" />
+              <InsideOutText text="about light." className="block text-[#DE3B2B]" />
             </h2>
 
             <p className="font-redhat text-[#999] leading-relaxed mb-12 max-w-sm"
@@ -106,18 +102,14 @@ export default function Contact() {
             </ul>
 
             <div className="mt-12">
-              <a href="mailto:hello@onae.ae" className="btn-outline-white text-sm tracking-widest uppercase">
+              <a href="mailto:hello@onae.ae" className="btn-outline-white text-sm tracking-widest uppercase rounded-none">
                 Start a conversation
               </a>
             </div>
-          </motion.div>
+          </InsideOutElement>
 
           {/* Right: enquiry form */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={headVisible ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.35, duration: 0.85, ease: [0.76, 0, 0.24, 1] }}
-          >
+          <InsideOutElement delay={0.4} className="flex flex-col">
             <p className="font-poppins text-sm tracking-[0.2em] uppercase text-[#DE3B2B] mb-10">
               Or send us an enquiry
             </p>
@@ -187,15 +179,15 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={status === 'sending'}
-                  className="btn-red text-sm tracking-widest uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-red text-sm tracking-widest uppercase disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
                 >
                   {status === 'sending' ? 'Sending…' : 'Send enquiry'}
                 </button>
 
                 {status === 'success' && (
                   <motion.p
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     className="font-redhat text-sm text-green-400"
                   >
                     Message sent. We'll be in touch.
@@ -203,8 +195,8 @@ export default function Contact() {
                 )}
                 {status === 'error' && (
                   <motion.p
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     className="font-redhat text-sm text-[#DE3B2B]"
                   >
                     Something went wrong. Please email us directly.
@@ -212,10 +204,9 @@ export default function Contact() {
                 )}
               </div>
             </form>
-          </motion.div>
+          </InsideOutElement>
         </div>
       </motion.div>
     </section>
   );
 }
-

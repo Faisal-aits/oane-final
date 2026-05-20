@@ -1,58 +1,56 @@
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import logo from '../assets/logo.png';
+import motionVideo from '../assets/O Motion.mp4';
 
-export default function Preloader() {
+export default function Preloader({ onComplete }) {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    // Autoplay fallback: in case the video is blocked or does not fire onEnded,
+    // automatically transition after 4.5 seconds.
+    const timer = setTimeout(() => {
+      if (onComplete) onComplete();
+    }, 4500);
+
+    // Attempt to force play in case of general browser policies
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // Silent catch for browsers with strict interaction rules
+      });
+    }
+
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
+  const handleVideoEnded = () => {
+    if (onComplete) onComplete();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 1 }}
       exit={{
         opacity: 0,
-        transition: { duration: 1, ease: 'easeInOut' }
+        transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] }
       }}
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0D0D0D]"
+      className="fixed inset-0 z-[9999] w-screen h-screen bg-[#000000] flex items-center justify-center overflow-hidden"
     >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
-        animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="relative flex flex-col items-center"
-      >
-        <motion.div
-          layoutId="onae-logo"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.7, 1, 0.7]
-          }}
-          transition={{
-            layout: { duration: 2.0, ease: [0.76, 0, 0.24, 1] },
-            repeat: Infinity,
-            duration: 2,
-            ease: 'easeInOut'
-          }}
-          className="w-24 h-24 md:w-32 md:h-32 flex items-center justify-center"
-        >
-          <img
-            src={logo}
-            alt="ONAÈ Logo"
-            className="w-full h-full object-contain"
-          />
-        </motion.div>
-
-        {/* Soft atmospheric glow */}
-        <div className="absolute inset-0 bg-[#DE3B2B]/20 blur-[60px] rounded-full pointer-events-none" />
-      </motion.div>
-
-      {/* Soft tracking text */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
-        className="mt-6 overflow-hidden"
-      >
-        <span className="font-poppins text-[9px] tracking-[0.6em] text-[#DE3B2B] uppercase font-medium">
-          ONAÈ
-        </span>
-      </motion.div>
+      {/* 
+        By setting the container and video backgrounds to pure black (#000000), 
+        the boundaries of the centered video melt away completely. The motion graphics 
+        float beautifully and play without any letterboxing, stretching, or cropping.
+      */}
+      <div className="relative w-full max-w-[480px] aspect-video sm:max-w-[640px] md:max-w-[800px] flex items-center justify-center p-6 bg-[#000000]">
+        <video
+          ref={videoRef}
+          src={motionVideo}
+          autoPlay
+          muted
+          playsInline
+          onEnded={handleVideoEnded}
+          className="w-full h-full object-contain pointer-events-none bg-[#000000]"
+        />
+      </div>
     </motion.div>
   );
 }

@@ -2,17 +2,23 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { SERVICES } from '../constants/index.jsx';
 import { useParallax } from '../hooks/useParallax.js';
+import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
-function ServiceCard({ service, index }) {
-  const ref    = useRef(null);
+function ServiceCard({ service, index, total }) {
+  const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
+
+  // Inside-out stagger calculation
+  const centerIndex = (total - 1) / 2;
+  const distanceFromCenter = Math.abs(index - centerIndex);
+  const staggerDelay = distanceFromCenter * 0.15;
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.75, ease: [0.76, 0, 0.24, 1], delay: (index % 2) * 0.12 }}
+      initial={{ opacity: 0, scale: 0.94, filter: 'blur(8px)' }}
+      animate={inView ? { opacity: 1, scale: 1, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: staggerDelay }}
       className="group py-8 px-0 border-b border-[#1A1A1A]/10 cursor-default"
     >
       <div className="flex items-start gap-6">
@@ -21,10 +27,11 @@ function ServiceCard({ service, index }) {
           {String(index + 1).padStart(2, '0')}
         </span>
         <div>
-          <h3 className="font-poppins font-semibold text-[#1A1A1A] mb-3 relative inline-block group-hover:text-[#DE3B2B] transition-colors duration-300"
+          <h3
+            className="font-poppins font-semibold text-[#1A1A1A] mb-3 relative block md:inline-block group-hover:text-[#DE3B2B] transition-colors duration-300"
             style={{ fontSize: 'clamp(1rem, 1.6vw, 1.2rem)' }}
           >
-            {service.title}
+            <InsideOutText text={service.title} delay={staggerDelay + 0.1} />
             <span className="absolute -bottom-1 left-0 h-[1.5px] w-0 bg-[#DE3B2B] group-hover:w-full transition-all duration-500 ease-out" />
           </h3>
           <p className="font-redhat text-[#1A1A1A]/60 leading-relaxed text-sm md:text-base">
@@ -37,7 +44,7 @@ function ServiceCard({ service, index }) {
 }
 
 export default function Services() {
-  const headRef    = useRef(null);
+  const headRef = useRef(null);
   const headVisible = useInView(headRef, { once: true, margin: '-80px' });
 
   const { ref: sectionRef, bgY, contentY } = useParallax(30, 60);
@@ -46,7 +53,7 @@ export default function Services() {
     <section
       id="services"
       ref={sectionRef}
-      className="parallax-section bg-[#F5F2ED]"
+      className="parallax-section bg-[#F5F2ED] overflow-hidden"
     >
       {/* Background decoration */}
       <motion.div
@@ -58,32 +65,25 @@ export default function Services() {
       <motion.div style={{ y: contentY }} className="relative z-10 section-pad max-w-[1440px] mx-auto">
         {/* Header */}
         <div ref={headRef} className="mb-16 max-w-xl">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={headVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="section-label block mb-6"
-          >
-            What We Do
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            animate={headVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.2, duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-            className="section-heading-dark"
-          >
-            Lighting design that completes the architecture.
-          </motion.h2>
+          <div className="mb-6">
+            <InsideOutText
+              text="What We Do"
+              className="section-label block"
+            />
+          </div>
+          <h2 className="section-heading-dark">
+            <InsideOutText text="Lighting design that" className="block text-[#1A1A1A]" />
+            <InsideOutText text="completes the architecture." className="block text-[#1A1A1A]" />
+          </h2>
         </div>
 
         {/* 2-column service grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 lg:gap-x-28">
           {SERVICES.map((svc, i) => (
-            <ServiceCard key={svc.title} service={svc} index={i} />
+            <ServiceCard key={svc.title} service={svc} index={i} total={SERVICES.length} />
           ))}
         </div>
       </motion.div>
     </section>
   );
 }
-

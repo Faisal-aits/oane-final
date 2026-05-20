@@ -1,25 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Preloader from './components/Preloader.jsx';
-import Navbar    from './components/Navbar.jsx';
-import Hero      from './components/Hero.jsx';
-import AboutUs   from './components/AboutUs.jsx';
+import Navbar from './components/Navbar.jsx';
+import Hero from './components/Hero.jsx';
+import AboutUs from './components/AboutUs.jsx';
 import Philosophy from './components/Philosophy.jsx';
-import Services  from './components/Services.jsx';
-import Process   from './components/Process.jsx';
-import Portfolio from './components/Portfolio.jsx';
-import Sectors   from './components/Sectors.jsx';
-import Journal   from './components/Journal.jsx';
-import Contact   from './components/Contact.jsx';
-import Footer    from './components/Footer.jsx';
+import Services from './components/Services.jsx';
+import Process from './components/Process.jsx';
+// import Portfolio from './components/Portfolio.jsx';
+import Sectors from './components/Sectors.jsx';
+// import Journal   from './components/Journal.jsx';
+import Contact from './components/Contact.jsx';
+import Footer from './components/Footer.jsx';
 
 // ── Custom cursor ─────────────────────────────────────────────
 function CustomCursor() {
-  const dotRef  = useRef(null);
+  const dotRef = useRef(null);
   const ringRef = useRef(null);
 
   useEffect(() => {
-    const dot  = dotRef.current;
+    const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
@@ -34,13 +34,13 @@ function CustomCursor() {
 
     const tick = () => {
       // Dot follows instantly
-      dot.style.left  = mx + 'px';
-      dot.style.top   = my + 'px';
+      dot.style.left = mx + 'px';
+      dot.style.top = my + 'px';
       // Ring lerps behind
       rx += (mx - rx) * 0.14;
       ry += (my - ry) * 0.14;
       ring.style.left = rx + 'px';
-      ring.style.top  = ry + 'px';
+      ring.style.top = ry + 'px';
       raf = requestAnimationFrame(tick);
     };
 
@@ -59,7 +59,7 @@ function CustomCursor() {
 
   return (
     <>
-      <div ref={dotRef}  className="cursor-dot" />
+      <div ref={dotRef} className="cursor-dot" />
       <div ref={ringRef} className="cursor-ring" />
     </>
   );
@@ -69,43 +69,40 @@ function CustomCursor() {
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate loading time
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <>
-      <AnimatePresence>
-        {isLoading && <Preloader key="loader" />}
+      <AnimatePresence mode="wait">
+        {isLoading && (
+          <Preloader key="loader" onComplete={() => setIsLoading(false)} />
+        )}
       </AnimatePresence>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={!isLoading ? { opacity: 1 } : {}}
-        transition={{ duration: 1.0, ease: 'easeOut' }}
-      >
-        <CustomCursor />
-        <Navbar />
+      <AnimatePresence>
+        {!isLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <CustomCursor />
+            <Navbar />
 
-        <main>
-          <Hero />
-          <AboutUs />
-          <Philosophy />
-          <Services />
-          <Process />
-          <Portfolio />
-          <Sectors />
-          <Journal />
-          <Contact />
-        </main>
+            <main>
+              <Hero />
+              <AboutUs />
+              <Philosophy />
+              <Services />
+              <Process />
+              {/* <Portfolio /> */}
+              <Sectors />
+              {/* <Journal /> */}
+              <Contact />
+            </main>
 
-        <Footer />
-      </motion.div>
+            <Footer />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

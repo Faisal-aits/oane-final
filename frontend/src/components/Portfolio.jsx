@@ -1,8 +1,9 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useParallax } from '../hooks/useParallax.js';
+import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
-// Placeholder project items (replace with real imagery)
+// Placeholder project items
 const PROJECTS = [
   { id: 1, title: 'Lobby, Downtown Dubai',   sector: 'Hospitality',  aspect: 'tall'    },
   { id: 2, title: 'Restaurant, DIFC',        sector: 'F&B',          aspect: 'wide'    },
@@ -22,9 +23,14 @@ const GRADIENTS = [
   'from-[#1a1014] via-[#241520] to-[#2e1a28]',
 ];
 
-function ProjectCard({ project, index }) {
-  const ref    = useRef(null);
+function ProjectCard({ project, index, total }) {
+  const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-40px' });
+
+  // Calculate inside-out stagger delay
+  const centerIndex = (total - 1) / 2;
+  const distanceFromCenter = Math.abs(index - centerIndex);
+  const staggerDelay = distanceFromCenter * 0.12;
 
   const heightClass = {
     tall:   'h-80 md:h-96',
@@ -35,9 +41,9 @@ function ProjectCard({ project, index }) {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 50, scale: 0.97 }}
-      animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{ duration: 0.85, ease: [0.76, 0, 0.24, 1], delay: (index % 3) * 0.12 }}
+      initial={{ opacity: 0, scale: 0.94, filter: 'blur(8px)' }}
+      animate={inView ? { opacity: 1, scale: 1, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: staggerDelay }}
       className={`relative overflow-hidden group cursor-pointer ${heightClass}`}
     >
       {/* Placeholder gradient bg */}
@@ -76,7 +82,7 @@ function ProjectCard({ project, index }) {
 }
 
 export default function Portfolio() {
-  const headRef    = useRef(null);
+  const headRef = useRef(null);
   const headVisible = useInView(headRef, { once: true, margin: '-80px' });
 
   const { ref: sectionRef, bgY, contentY } = useParallax(30, 80);
@@ -85,7 +91,7 @@ export default function Portfolio() {
     <section
       id="work"
       ref={sectionRef}
-      className="parallax-section bg-[#F5F2ED]"
+      className="parallax-section bg-[#F5F2ED] overflow-hidden"
     >
       <motion.div
         style={{ y: bgY }}
@@ -96,26 +102,21 @@ export default function Portfolio() {
       <motion.div style={{ y: contentY }} className="relative z-10 section-pad max-w-[1440px] mx-auto">
         {/* Header */}
         <div ref={headRef} className="mb-14">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={headVisible ? { opacity: 1, y: 0 } : {}}
-            className="section-label block mb-6"
-          >
-            Selected Work
-          </motion.span>
+          <div className="mb-6">
+            <InsideOutText
+              text="Selected Work"
+              className="section-label block"
+            />
+          </div>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              animate={headVisible ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.2, duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-              className="section-heading-dark max-w-md"
-            >
-              Spaces shaped by considered light.
-            </motion.h2>
+            <h2 className="section-heading-dark max-w-md">
+              <InsideOutText text="Spaces shaped by" className="block text-[#1A1A1A]" />
+              <InsideOutText text="considered light." className="block text-[#1A1A1A]" />
+            </h2>
             <motion.p
-              initial={{ opacity: 0 }}
-              animate={headVisible ? { opacity: 1 } : {}}
-              transition={{ delay: 0.5, duration: 0.7 }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={headVisible ? { opacity: 1, scale: 1 } : {}}
+              transition={{ delay: 0.4, duration: 0.8, ease: 'easeOut' }}
               className="font-redhat text-[#1A1A1A]/50 text-sm max-w-xs"
             >
               Our first projects are nearing completion. Portfolio updates coming soon.
@@ -126,11 +127,10 @@ export default function Portfolio() {
         {/* Masonry-style grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {PROJECTS.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} />
+            <ProjectCard key={project.id} project={project} index={i} total={PROJECTS.length} />
           ))}
         </div>
       </motion.div>
     </section>
   );
 }
-

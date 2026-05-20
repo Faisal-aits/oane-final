@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useScroll, useTransform } from 'framer-motion';
 
 /**
@@ -10,17 +10,35 @@ import { useScroll, useTransform } from 'framer-motion';
  */
 export function useParallax(bgOffset = 50, fgOffset = 150) {
   const ref = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start end', 'end start'],
   });
 
+  // On mobile, we zero out the offsets to prevent text clipping & overflow issues.
+  // On desktop, we globally scale them down by ~70% to make the scroll shifts extremely subtle and premium.
+  const subtleBg = bgOffset * 0.3;
+  const subtleFg = fgOffset * 0.35;
+
+  const activeBg = isMobile ? 0 : subtleBg;
+  const activeFg = isMobile ? 0 : subtleFg;
+
   // Background moves slowly (drifts with scroll)
-  const bgY = useTransform(scrollYProgress, [0, 1], [-bgOffset, bgOffset]);
+  const bgY = useTransform(scrollYProgress, [0, 1], [-activeBg, activeBg]);
 
   // Content moves faster (drifts against scroll)
-  const contentY = useTransform(scrollYProgress, [0, 1], [fgOffset, -fgOffset]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [activeFg, -activeFg]);
 
   // Opacity — full at center, fade at edges (optional helper)
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);

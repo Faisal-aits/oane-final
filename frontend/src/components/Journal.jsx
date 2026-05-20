@@ -2,17 +2,23 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { JOURNAL_ARTICLES } from '../constants/index.jsx';
 import { useParallax } from '../hooks/useParallax.js';
+import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
-function ArticleCard({ article, index }) {
-  const ref    = useRef(null);
+function ArticleCard({ article, index, total }) {
+  const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
+
+  // Inside-out stagger calculation (stagger from the middle article outwards)
+  const centerIndex = (total - 1) / 2;
+  const distanceFromCenter = Math.abs(index - centerIndex);
+  const staggerDelay = distanceFromCenter * 0.16;
 
   return (
     <motion.article
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: index * 0.15 }}
+      initial={{ opacity: 0, scale: 0.94, filter: 'blur(8px)' }}
+      animate={inView ? { opacity: 1, scale: 1, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: staggerDelay }}
       className="group relative bg-white border border-[#1A1A1A]/8 p-8 cursor-pointer overflow-hidden flex flex-col justify-between min-h-[260px]"
     >
       {/* Red left border that thickens on hover */}
@@ -32,7 +38,7 @@ function ArticleCard({ article, index }) {
           className="font-poppins font-semibold text-[#1A1A1A] leading-snug mb-4 group-hover:text-[#DE3B2B] transition-colors duration-300"
           style={{ fontSize: 'clamp(1rem, 1.6vw, 1.15rem)' }}
         >
-          {article.title}
+          <InsideOutText text={article.title} delay={staggerDelay + 0.1} />
         </h3>
 
         {/* Excerpt */}
@@ -62,7 +68,7 @@ function ArticleCard({ article, index }) {
 }
 
 export default function Journal() {
-  const headRef    = useRef(null);
+  const headRef = useRef(null);
   const headVisible = useInView(headRef, { once: true, margin: '-80px' });
 
   const { ref: sectionRef, bgY, contentY } = useParallax(40, 80);
@@ -71,7 +77,7 @@ export default function Journal() {
     <section
       id="journal"
       ref={sectionRef}
-      className="parallax-section bg-[#F5F2ED]"
+      className="parallax-section bg-[#F5F2ED] overflow-hidden"
     >
       {/* Background decoration */}
       <motion.div
@@ -88,40 +94,30 @@ export default function Journal() {
         {/* Header */}
         <div ref={headRef} className="mb-14 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div>
-            <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              animate={headVisible ? { opacity: 1, y: 0 } : {}}
-              className="section-label block mb-6"
-            >
-              Journal
-            </motion.span>
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              animate={headVisible ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.2, duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-              className="section-heading-dark max-w-xs"
-            >
-              Thinking about light.
-            </motion.h2>
+            <div className="mb-6">
+              <InsideOutText
+                text="Journal"
+                className="section-label block"
+              />
+            </div>
+            <h2 className="section-heading-dark max-w-xs">
+              <InsideOutText text="Thinking about light." className="block text-[#1A1A1A]" />
+            </h2>
           </div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={headVisible ? { opacity: 1 } : {}}
-            transition={{ delay: 0.5 }}
-            className="font-redhat text-[#1A1A1A]/45 text-sm max-w-xs leading-relaxed"
-          >
-            Essays, observations, and perspectives on architectural lighting design.
-          </motion.p>
+          <InsideOutElement delay={0.3}>
+            <p className="font-redhat text-[#1A1A1A]/45 text-sm max-w-xs leading-relaxed">
+              Essays, observations, and perspectives on architectural lighting design.
+            </p>
+          </InsideOutElement>
         </div>
 
         {/* Article cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {JOURNAL_ARTICLES.map((article, i) => (
-            <ArticleCard key={article.title} article={article} index={i} />
+            <ArticleCard key={article.title} article={article} index={i} total={JOURNAL_ARTICLES.length} />
           ))}
         </div>
       </motion.div>
     </section>
   );
 }
-

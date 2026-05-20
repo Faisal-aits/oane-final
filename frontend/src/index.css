@@ -67,6 +67,17 @@ body {
   border-color: var(--red);
 }
 
+/* Hide custom cursor on touch/mobile screens to optimize mobile UX */
+@media (max-width: 767px) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+  body {
+    cursor: auto !important;
+  }
+}
+
 /* ── Scrollbar ────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--black); }
@@ -93,7 +104,7 @@ body {
 
 .section-heading-light {
   font-family: 'Poppins', sans-serif;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: clamp(1.4rem, 4vw, 2.5rem);
   font-weight: 600;
   color: var(--white);
   line-height: 1.2;
@@ -101,7 +112,7 @@ body {
 
 .section-heading-dark {
   font-family: 'Poppins', sans-serif;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: clamp(1.4rem, 4vw, 2.5rem);
   font-weight: 600;
   color: var(--black);
   line-height: 1.2;

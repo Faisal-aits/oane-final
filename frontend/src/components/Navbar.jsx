@@ -69,7 +69,7 @@ export default function Navbar() {
       <motion.nav
         initial={{ y: -100, x: '-50%', opacity: 0 }}
         animate={{ y: 0, x: '-50%', opacity: 1 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 4.2 }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
         className={`fixed top-6 left-1/2 z-50 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] px-6 rounded-full border flex items-center justify-between gap-6 lg:gap-10 backdrop-blur-xl
           ${scrolled
             ? 'w-auto min-w-[300px] max-w-[95%] py-2.5'

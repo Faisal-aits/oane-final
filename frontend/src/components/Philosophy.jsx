@@ -2,25 +2,26 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { PHILOSOPHY_PRINCIPLES } from '../constants/index.jsx';
 import { useParallax } from '../hooks/useParallax.js';
+import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
 function PrincipleCard({ principle, index }) {
-  const ref    = useRef(null);
+  const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: index * 0.1 }}
-      className="flex gap-8 md:gap-16 py-10 border-b border-white/8 group"
+      initial={{ opacity: 0, scale: 0.95, filter: 'blur(6px)' }}
+      animate={inView ? { opacity: 1, scale: 1, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: index * 0.12 }}
+      className="flex gap-8 md:gap-16 py-10 border-b border-white/8 group relative overflow-hidden"
     >
       {/* Number */}
       <div className="flex-shrink-0 w-16">
         <motion.span
-          initial={{ opacity: 0, y: 10 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: index * 0.1 + 0.2, duration: 0.5 }}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={inView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ delay: index * 0.12 + 0.2, duration: 0.6, ease: 'easeOut' }}
           className="font-poppins font-bold text-[#DE3B2B] block"
           style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)' }}
         >
@@ -30,19 +31,16 @@ function PrincipleCard({ principle, index }) {
 
       {/* Title + body */}
       <div className="flex-1">
-        <motion.h3
-          initial={{ opacity: 0, y: 12 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: index * 0.1 + 0.3, duration: 0.6 }}
+        <h3
           className="font-poppins font-semibold text-white mb-3 group-hover:text-[#DE3B2B] transition-colors duration-300"
           style={{ fontSize: 'clamp(1.1rem, 2vw, 1.4rem)' }}
         >
-          {principle.title}
-        </motion.h3>
+          <InsideOutText text={principle.title} delay={index * 0.12 + 0.1} />
+        </h3>
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: index * 0.1 + 0.45, duration: 0.7 }}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={inView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ delay: index * 0.12 + 0.3, duration: 0.7 }}
           className="font-redhat text-[#999] leading-relaxed"
           style={{ fontSize: 'clamp(0.9rem, 1.3vw, 1.05rem)' }}
         >
@@ -70,7 +68,7 @@ export default function Philosophy() {
 
   const { ref: sectionRef, bgY, contentY } = useParallax(40, 80);
 
-  // Floating red circle decoration (still use custom if desired, or bgY)
+  // Floating circles decoration
   const deco1Y = bgY;
   const deco2Y = bgY;
 
@@ -78,7 +76,7 @@ export default function Philosophy() {
     <section
       id="philosophy"
       ref={sectionRef}
-      className="parallax-section bg-[#1A1A1A]"
+      className="parallax-section bg-[#1A1A1A] overflow-hidden"
     >
       {/* Background decorations — parallax */}
       <motion.div
@@ -98,22 +96,16 @@ export default function Philosophy() {
       <motion.div style={{ y: contentY }} className="relative z-10 section-pad max-w-[1440px] mx-auto">
         {/* Header */}
         <div ref={headingRef} className="mb-16">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={headingVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="section-label block mb-6"
-          >
-            How We Think
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            animate={headingVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.2, duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-            className="section-heading-light max-w-lg"
-          >
-            Five principles that shape every project.
-          </motion.h2>
+          <div className="mb-6">
+            <InsideOutText
+              text="How We Think"
+              className="section-label block"
+            />
+          </div>
+          <h2 className="section-heading-light max-w-lg">
+            <InsideOutText text="Five principles that" className="block text-white" />
+            <InsideOutText text="shape every project." className="block text-white" />
+          </h2>
         </div>
 
         {/* Principles */}

@@ -1,10 +1,32 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { PROCESS_PHASES } from '../constants/index.jsx';
 import { useParallax } from '../hooks/useParallax.js';
 import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
-function PhaseCard({ phase, index, total }) {
+const PROCESS_PHASES = [
+  {
+    number: '01',
+    title: 'Listen',
+    body: "We study the architecture. The materials. The spatial intent. We meet with the architect, the interior designer, and the engineering team to understand what the space wants to be. No preconceptions. No default solutions.",
+  },
+  {
+    number: '02',
+    title: 'Design',
+    body: "Concept development through to detailed design. Mood studies. Lighting layouts. Layer strategies. We define the spatial hierarchy — where light creates focus, where shadow adds depth, how the space transforms from day to night.",
+  },
+  {
+    number: '03',
+    title: 'Specify',
+    body: "Product-agnostic fixture selection. We specify based on optical performance, colour rendering, and design fit — not brand preference. We produce detailed specification documents and coordinate with the MEP engineer.",
+  },
+  {
+    number: '04',
+    title: 'Focus',
+    body: "On-site commissioning and focusing. We attend site to ensure every fixture is aimed, dimmed, and balanced exactly as designed. This is where the drawing becomes real. It is the most important day on any lighting project.",
+  },
+];
+
+const PhaseCard = ({ phase, index, total }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
@@ -64,7 +86,7 @@ function PhaseCard({ phase, index, total }) {
   );
 }
 
-export default function Process() {
+const Process = () => {
   const headRef = useRef(null);
   const headVisible = useInView(headRef, { once: true, margin: '-80px' });
 
@@ -113,3 +135,5 @@ export default function Process() {
     </section>
   );
 }
+
+export default Process;

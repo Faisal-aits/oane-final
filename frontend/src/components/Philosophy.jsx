@@ -1,10 +1,37 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { PHILOSOPHY_PRINCIPLES } from '../constants/index.jsx';
 import { useParallax } from '../hooks/useParallax.js';
 import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
-function PrincipleCard({ principle, index }) {
+const PHILOSOPHY_PRINCIPLES = [
+  {
+    number: '01',
+    title: 'Light Follows Architecture',
+    body: "We begin with the architect's intent, not the product catalogue. The space defines what the light needs to do. Every decision follows from the architecture — never the other way around.",
+  },
+  {
+    number: '02',
+    title: 'Experience Over Spectacle',
+    body: "We design light that rewards attention, not demands it. The best lighting is the kind you feel — warmth in a lobby, intimacy in a restaurant, calm in a corridor — without ever noticing why.",
+  },
+  {
+    number: '03',
+    title: 'Function Before Decoration',
+    body: "The lighting must work before it can be beautiful. Spatial hierarchy, task performance, material response, circadian comfort — these come first. The aesthetic follows from the function, not the other way around.",
+  },
+  {
+    number: '04',
+    title: 'Clarity Over Complexity',
+    body: "The simplest solution that serves the architecture is usually the right one. We don't add layers of complexity to justify our involvement. We add clarity to what the space already wants to be.",
+  },
+  {
+    number: '05',
+    title: 'Design Before Product',
+    body: "The fixture is the last decision, not the first. We specify products only after the design intent is established, the layers are defined, and the spatial hierarchy is clear. The right product emerges from the right design — never the reverse.",
+  },
+];
+
+const PrincipleCard = ({ principle, index }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -62,7 +89,7 @@ function PrincipleCard({ principle, index }) {
   );
 }
 
-export default function Philosophy() {
+const Philosophy = () => {
   const headingRef = useRef(null);
   const headingVisible = useInView(headingRef, { once: true, margin: '-80px' });
 
@@ -118,3 +145,5 @@ export default function Philosophy() {
     </section>
   );
 }
+
+export default Philosophy;

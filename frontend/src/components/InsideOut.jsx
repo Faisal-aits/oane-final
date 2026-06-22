@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
  * The characters are initially collapsed toward the word's center, scaled down, and blurred.
  * When they appear, they expand outwards to their natural letter spacing with a premium ease.
  */
-export function InsideOutText({ text, className = '', delay = 0 }) {
+export const InsideOutText = ({ text, className = '', delay = 0 }) => {
   if (!text) return null;
   
   // Split by words to prevent broken line wraps on mobile devices
@@ -35,13 +35,11 @@ export function InsideOutText({ text, className = '', delay = 0 }) {
                   opacity: 0,
                   scale: 0.4,
                   x: direction * -10, // Pull inwards toward center
-                  filter: 'blur(6px)',
                 },
                 visible: {
                   opacity: 1,
                   scale: 1,
                   x: 0,
-                  filter: 'blur(0px)',
                   transition: {
                     duration: 0.9,
                     ease: [0.16, 1, 0.3, 1], // premium easeOutExpo curve
@@ -71,14 +69,13 @@ export function InsideOutText({ text, className = '', delay = 0 }) {
  * InsideOutElement — Animates a single container/element from the inside out (scaling up,
  * blooming, and fading in).
  */
-export function InsideOutElement({ children, className = '', delay = 0, duration = 0.95 }) {
+export const InsideOutElement = ({ children, className = '', delay = 0, duration = 0.95 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.92, filter: 'blur(8px)' }}
+      initial={{ opacity: 0, scale: 0.92 }}
       whileInView={{
         opacity: 1,
         scale: 1,
-        filter: 'blur(0px)',
       }}
       transition={{
         duration,
@@ -97,7 +94,7 @@ export function InsideOutElement({ children, className = '', delay = 0, duration
  * InsideOutStagger — Animates a collection of children items by staggering their entrance
  * starting from the center index outward to the edges.
  */
-export function InsideOutStagger({ children, delay = 0, duration = 0.9, interval = 0.12, className = '' }) {
+export const InsideOutStagger = ({ children, delay = 0, duration = 0.9, interval = 0.12, className = '' }) => {
   const childrenArray = Array.isArray(children) ? children : [children];
   const total = childrenArray.length;
   const center = (total - 1) / 2;
@@ -111,11 +108,10 @@ export function InsideOutStagger({ children, delay = 0, duration = 0.9, interval
         return (
           <motion.div
             key={index}
-            initial={{ opacity: 0, scale: 0.93, filter: 'blur(8px)' }}
+            initial={{ opacity: 0, scale: 0.93 }}
             whileInView={{
               opacity: 1,
               scale: 1,
-              filter: 'blur(0px)',
             }}
             transition={{
               duration,

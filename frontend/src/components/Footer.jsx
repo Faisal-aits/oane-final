@@ -2,7 +2,7 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import logo from '../assets/logo.png';
 
-export default function Footer() {
+const Footer = () => {
   const ref     = useRef(null);
   const inView  = useInView(ref, { once: true });
 
@@ -59,3 +59,5 @@ export default function Footer() {
     </footer>
   );
 }
+
+export default Footer;

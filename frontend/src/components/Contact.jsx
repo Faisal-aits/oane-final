@@ -2,11 +2,28 @@ import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { CONTACT_DETAILS, PROJECT_TYPES } from '../constants/index.jsx';
 import { useParallax } from '../hooks/useParallax.js';
 import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
-export default function Contact() {
+const CONTACT_DETAILS = [
+  { label: 'Email', value: 'hello@onae.ae', href: 'mailto:hello@onae.ae' },
+  { label: 'Phone', value: '+971 — — — — — —', href: 'tel:+971000000000' },
+  { label: 'Location', value: 'Dubai, United Arab Emirates', href: null },
+  { label: 'Instagram', value: '@onae.light', href: 'https://instagram.com/onae.light' },
+  { label: 'LinkedIn', value: 'ONAÈ Lighting Design', href: 'https://linkedin.com' },
+];
+
+const PROJECT_TYPES = [
+  'Hospitality',
+  'Commercial',
+  'Residential',
+  'F&B',
+  'Cultural',
+  'Masterplanning',
+  'Other',
+];
+
+const Contact = () => {
   const headRef = useRef(null);
   const headVisible = useInView(headRef, { once: true, margin: '-80px' });
   const [status, setStatus] = useState(null); // null | 'sending' | 'success' | 'error'
@@ -59,7 +76,7 @@ export default function Contact() {
 
         {/* Two-column layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
-          
+
           {/* Left: copy + contact details */}
           <InsideOutElement delay={0.2} className="flex flex-col">
             <h2
@@ -210,3 +227,5 @@ export default function Contact() {
     </section>
   );
 }
+
+export default Contact;

@@ -8,7 +8,7 @@ import { useScroll, useTransform } from 'framer-motion';
  * bgOffset: small value for "slow" movement
  * fgOffset: larger value for "fast" movement
  */
-export function useParallax(bgOffset = 50, fgOffset = 150) {
+export const useParallax = (bgOffset = 50, fgOffset = 150) => {
   const ref = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -27,9 +27,9 @@ export function useParallax(bgOffset = 50, fgOffset = 150) {
   });
 
   // On mobile, we zero out the offsets to prevent text clipping & overflow issues.
-  // On desktop, we globally scale them down by ~70% to make the scroll shifts extremely subtle and premium.
-  const subtleBg = bgOffset * 0.3;
-  const subtleFg = fgOffset * 0.35;
+  // On desktop, we scale them down slightly to make the scroll shifts subtle and premium.
+  const subtleBg = bgOffset * 0.8;
+  const subtleFg = fgOffset * 0.9;
 
   const activeBg = isMobile ? 0 : subtleBg;
   const activeFg = isMobile ? 0 : subtleFg;
@@ -50,7 +50,7 @@ export function useParallax(bgOffset = 50, fgOffset = 150) {
  * useHeroParallax — special parallax for full-viewport hero.
  * Background video drifts slowly; text rises faster.
  */
-export function useHeroParallax() {
+export const useHeroParallax = () => {
   const ref = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -58,11 +58,11 @@ export function useHeroParallax() {
     offset: ['start start', 'end start'],
   });
 
-  // Background video moves slowly down (0% to 15%)
-  const videoY   = useTransform(scrollYProgress, [0, 1], ['0%', '15%']);
+  // Background video moves faster down (0% to 35%)
+  const videoY   = useTransform(scrollYProgress, [0, 1], ['0%', '35%']);
   
-  // Text content rises faster (0% to -40%)
-  const textY    = useTransform(scrollYProgress, [0, 1], ['0%', '-40%']);
+  // Text content rises faster (0% to -60%)
+  const textY    = useTransform(scrollYProgress, [0, 1], ['0%', '-60%']);
   
   const opacity  = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
   const scale    = useTransform(scrollYProgress, [0, 1], [1, 1.1]);

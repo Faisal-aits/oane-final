@@ -4,7 +4,7 @@ import { JOURNAL_ARTICLES } from '../constants/index.jsx';
 import { useParallax } from '../hooks/useParallax.js';
 import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
-function ArticleCard({ article, index, total }) {
+const ArticleCard = ({ article, index, total }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
@@ -67,7 +67,7 @@ function ArticleCard({ article, index, total }) {
   );
 }
 
-export default function Journal() {
+const Journal = () => {
   const headRef = useRef(null);
   const headVisible = useInView(headRef, { once: true, margin: '-80px' });
 
@@ -121,3 +121,5 @@ export default function Journal() {
     </section>
   );
 }
+
+export default Journal;

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import motionVideo from '../assets/O Motion.mp4';
 
-export default function Preloader({ onComplete }) {
+const Preloader = ({ onComplete }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -10,7 +10,7 @@ export default function Preloader({ onComplete }) {
     // automatically transition after 4.5 seconds.
     const timer = setTimeout(() => {
       if (onComplete) onComplete();
-    }, 4500);
+    }, 2200);
 
     // Attempt to force play in case of general browser policies
     if (videoRef.current) {
@@ -54,3 +54,5 @@ export default function Preloader({ onComplete }) {
     </motion.div>
   );
 }
+
+export default Preloader;

@@ -6,7 +6,7 @@ import video2 from '../assets/video2.mp4';
 import logo from '../assets/logo.png';
 import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
-export default function Hero() {
+const Hero = () => {
   const { ref, videoY, textY, opacity, scale } = useHeroParallax();
   const [loaded, setLoaded] = useState(false);
 
@@ -102,7 +102,7 @@ export default function Hero() {
       </motion.div>
 
       {/* ── Scroll indicator ────────────────────────── */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0 }}
         animate={loaded ? { opacity: 1 } : {}}
         transition={{ delay: 0.8, duration: 1 }}
@@ -116,7 +116,7 @@ export default function Hero() {
           transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
           className="w-px h-10 bg-gradient-to-b from-[#DE3B2B] to-transparent"
         />
-      </motion.div>
+      </motion.div> */}
 
       {/* ── Corner coords ───────────────────────────── */}
       <motion.div
@@ -132,3 +132,5 @@ export default function Hero() {
     </section>
   );
 }
+
+export default Hero;

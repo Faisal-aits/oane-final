@@ -1,10 +1,20 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { SECTORS } from '../constants/index.jsx';
 import { useParallax } from '../hooks/useParallax.js';
 import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
-export default function Sectors() {
+const SECTORS = [
+  'Hospitality & Hotels',
+  'Restaurants & F&B',
+  'Commercial Offices',
+  'Residential',
+  'Retail',
+  'Cultural & Public Spaces',
+  'Facades & Landscapes',
+  'Masterplanning',
+];
+
+const Sectors = () => {
   const headRef = useRef(null);
   const listRef = useRef(null);
   const headVisible = useInView(headRef, { once: true, margin: '-80px' });
@@ -94,3 +104,5 @@ export default function Sectors() {
     </section>
   );
 }
+
+export default Sectors;

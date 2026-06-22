@@ -23,7 +23,7 @@ const GRADIENTS = [
   'from-[#1a1014] via-[#241520] to-[#2e1a28]',
 ];
 
-function ProjectCard({ project, index, total }) {
+const ProjectCard = ({ project, index, total }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-40px' });
 
@@ -81,7 +81,7 @@ function ProjectCard({ project, index, total }) {
   );
 }
 
-export default function Portfolio() {
+const Portfolio = () => {
   const headRef = useRef(null);
   const headVisible = useInView(headRef, { once: true, margin: '-80px' });
 
@@ -134,3 +134,5 @@ export default function Portfolio() {
     </section>
   );
 }
+
+export default Portfolio;

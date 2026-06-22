@@ -1,10 +1,36 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { SERVICES } from '../constants/index.jsx';
 import { useParallax } from '../hooks/useParallax.js';
 import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
-function ServiceCard({ service, index, total }) {
+const SERVICES = [
+  {
+    title: 'Concept Development',
+    body: "We translate the architect's spatial intent into a lighting language. From initial concept through to mood studies, reference imagery, and narrative direction — establishing what the light needs to achieve before a single fixture enters the conversation.",
+  },
+  {
+    title: 'Detailed Lighting Design',
+    body: "Comprehensive lighting layouts, fixture schedules, specification documents, and control strategies. Every fitting is selected to serve the design intent. We coordinate with the full project team to ensure the design is buildable, compliant, and on budget.",
+  },
+  {
+    title: 'Specification & Procurement Support',
+    body: "Product-agnostic specification based on performance, not brand loyalty. We evaluate fixtures on optical quality, colour rendering, beam control, and value. When budgets shift, we adapt specifications without compromising the design intent.",
+  },
+  {
+    title: 'On-Site Focusing & Commissioning',
+    body: "The moment the design becomes real. We attend site during installation and focusing to ensure every fixture is aimed, dimmed, and balanced exactly as designed. This is the most critical phase — and the one most projects skip.",
+  },
+  {
+    title: 'Lighting Masterplanning',
+    body: "For large-scale developments, campuses, and urban projects. A unified lighting strategy across multiple buildings, landscapes, and public spaces — ensuring consistency of atmosphere and experience across the entire site.",
+  },
+  {
+    title: 'Daylight Integration',
+    body: "Natural and artificial light are not separate systems. We model daylight behaviour across seasons and hours, then design the artificial lighting to complement, not compete with, the sun. In the UAE, where sunlight is the dominant condition, this is not optional — it is fundamental.",
+  },
+];
+
+const ServiceCard = ({ service, index, total }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
@@ -43,7 +69,7 @@ function ServiceCard({ service, index, total }) {
   );
 }
 
-export default function Services() {
+const Services = () => {
   const headRef = useRef(null);
   const headVisible = useInView(headRef, { once: true, margin: '-80px' });
 
@@ -87,3 +113,5 @@ export default function Services() {
     </section>
   );
 }
+
+export default Services;

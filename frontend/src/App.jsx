@@ -1,20 +1,54 @@
 import { useEffect, useRef, useState } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import Lenis from 'lenis';
+
 import Preloader from './components/Preloader.jsx';
 import Navbar from './components/Navbar.jsx';
-import Hero from './components/Hero.jsx';
-import AboutUs from './components/AboutUs.jsx';
-import Philosophy from './components/Philosophy.jsx';
-import Services from './components/Services.jsx';
-import Process from './components/Process.jsx';
-// import Portfolio from './components/Portfolio.jsx';
-import Sectors from './components/Sectors.jsx';
-// import Journal   from './components/Journal.jsx';
-import Contact from './components/Contact.jsx';
 import Footer from './components/Footer.jsx';
 
+import Home from './pages/Home.jsx';
+import About from './pages/About.jsx';
+import Services from './pages/Services.jsx';
+import Work from './pages/Work.jsx';
+import Contact from './pages/Contact.jsx';
+
+// ── Smooth Scrolling ─────────────────────────────────────────
+const SmoothScrolling = () => {
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smooth: true,
+      smoothTouch: false,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
+  return null;
+};
+
+// ── Scroll to top on route change ─────────────────────────────
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
+
 // ── Custom cursor ─────────────────────────────────────────────
-function CustomCursor() {
+const CustomCursor = () => {
   const dotRef = useRef(null);
   const ringRef = useRef(null);
 
@@ -66,11 +100,13 @@ function CustomCursor() {
 }
 
 // ── App ───────────────────────────────────────────────────────
-export default function App() {
+const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <>
+    <BrowserRouter>
+      <ScrollToTop />
+      <SmoothScrolling />
       <AnimatePresence mode="wait">
         {isLoading && (
           <Preloader key="loader" onComplete={() => setIsLoading(false)} />
@@ -88,21 +124,21 @@ export default function App() {
             <Navbar />
 
             <main>
-              <Hero />
-              <AboutUs />
-              <Philosophy />
-              <Services />
-              <Process />
-              {/* <Portfolio /> */}
-              <Sectors />
-              {/* <Journal /> */}
-              <Contact />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/work" element={<Work />} />
+                <Route path="/contact" element={<Contact />} />
+              </Routes>
             </main>
 
             <Footer />
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </BrowserRouter>
   );
 }
+
+export default App;

@@ -1,17 +1,24 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { NAV_LINKS } from '../constants/index.jsx';
+import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
-export default function Navbar() {
+const NAV_LINKS = [
+  { path: '/about', label: 'About' },
+  { path: '/services', label: 'Services' },
+  { path: '/work', label: 'Work' },
+  { path: '/contact', label: 'Contact', isButton: true },
+];
+
+const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActive] = useState('');
   const [lastScrollY, setLastScrollY] = useState(0);
+  const { pathname } = useLocation();
 
   // Sections with light backgrounds where text should be black
-  const lightSections = ['services', 'work', 'journal'];
-  const isLightSection = lightSections.includes(activeSection);
+  const lightSections = [];
+  const isLightSection = lightSections.includes(pathname);
 
   // Scroll logic for dynamic shrinking/expanding based on direction
   useEffect(() => {
@@ -33,33 +40,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [lastScrollY]);
 
-  // Section observer for active state
-  useEffect(() => {
-    const ids = NAV_LINKS.map(l => l.id);
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(e => { 
-          if (e.isIntersecting) {
-            setActive(e.target.id);
-          }
-        });
-      },
-      { threshold: 0.3, rootMargin: '-20% 0px -60% 0px' }
-    );
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    setMenuOpen(false);
-  };
-
   const textColor = isLightSection ? 'text-black' : 'text-white';
-  const textMutedColor = isLightSection ? 'text-black/40' : 'text-white/40';
   const borderColor = isLightSection ? 'border-black/10' : 'border-white/10';
   const logoFilter = isLightSection ? 'brightness(0)' : 'none';
   const navBg = isLightSection ? 'bg-white/40 shadow-sm' : 'bg-[#1A1A1A]/60 shadow-2xl';
@@ -77,8 +58,9 @@ export default function Navbar() {
           } ${navBg} ${borderColor}`}
       >
         {/* Logo Section */}
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        <Link
+          to="/"
+          onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setMenuOpen(false); }}
           className="flex items-center gap-2 group shrink-0"
         >
           <div className="relative w-7 h-7 flex items-center justify-center transition-transform duration-500 group-hover:rotate-12">
@@ -103,23 +85,23 @@ export default function Navbar() {
               </motion.span>
             )}
           </AnimatePresence>
-        </button>
+        </Link>
 
         {/* Desktop Links - Always Visible */}
         <ul className="hidden md:flex items-center gap-6 lg:gap-10">
           {NAV_LINKS.map(link => (
-            <li key={link.id}>
-              <button
-                onClick={() => scrollTo(link.id)}
+            <li key={link.path}>
+              <Link
+                to={link.path}
                 className={`font-poppins text-[10px] uppercase tracking-[0.2em] transition-all duration-500 relative group
-                  ${activeSection === link.id ? (isLightSection ? 'text-black font-semibold' : 'text-white font-semibold') : (isLightSection ? 'text-black/50 hover:text-black' : 'text-white/40 hover:text-white')}
+                  ${pathname === link.path ? (isLightSection ? 'text-black font-semibold' : 'text-white font-semibold') : (isLightSection ? 'text-black/50 hover:text-black' : 'text-white/40 hover:text-white')}
                 `}
               >
                 {link.label}
                 <span className={`absolute -bottom-1 left-1/2 -translate-x-1/2 h-[2px] bg-[#DE3B2B] transition-all duration-500 rounded-full
-                  ${activeSection === link.id ? 'w-1' : 'w-0 group-hover:w-1'}
+                  ${pathname === link.path ? 'w-1' : 'w-0 group-hover:w-1'}
                 `} />
-              </button>
+              </Link>
             </li>
           ))}
         </ul>
@@ -142,9 +124,6 @@ export default function Navbar() {
         </div>
       </motion.nav>
 
-
-
-
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {menuOpen && (
@@ -163,13 +142,14 @@ export default function Navbar() {
             <ul className="relative z-10 flex flex-col items-center gap-6 text-center">
               {NAV_LINKS.map((link, i) => (
                 <motion.li
-                  key={link.id}
+                  key={link.path}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + i * 0.1 }}
                 >
-                  <button
-                    onClick={() => scrollTo(link.id)}
+                  <Link
+                    to={link.path}
+                    onClick={() => setMenuOpen(false)}
                     className="group relative"
                   >
                     <span className="font-poppins text-3xl md:text-4xl font-semibold text-white/20 group-hover:text-[#DE3B2B] transition-colors duration-500 uppercase tracking-widest">
@@ -178,7 +158,7 @@ export default function Navbar() {
                     <span className="absolute -left-6 top-1/2 -translate-y-1/2 text-[10px] font-poppins font-medium text-[#DE3B2B] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       0{i + 1}
                     </span>
-                  </button>
+                  </Link>
                 </motion.li>
               ))}
             </ul>
@@ -204,3 +184,4 @@ export default function Navbar() {
   );
 }
 
+export default Navbar;

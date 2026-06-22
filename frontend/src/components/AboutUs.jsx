@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useParallax } from '../hooks/useParallax.js';
 import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
 
-export default function AboutUs() {
+const AboutUs = () => {
   const { ref: containerRef, bgY, contentY, opacity: aboutOpacity } = useParallax(60, 100);
 
   return (
@@ -36,7 +36,7 @@ export default function AboutUs() {
           transition={{ delay: 1.5, duration: 1 }}
           className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-10"
         >
-          <span className="text-[10px] tracking-widest uppercase text-white/20">Scroll to explore</span>
+          <span className="text-[10px] tracking-widest uppercase text-white/40">Scroll to explore</span>
           <div className="w-px h-12 bg-gradient-to-b from-onae-red/40 to-transparent" />
         </motion.div>
       </section>
@@ -44,7 +44,7 @@ export default function AboutUs() {
       {/* SECTION 2: Heading + Description */}
       <section className="relative min-h-screen py-20 md:py-32 px-6 md:px-12 bg-onae-offwhite text-onae-black overflow-hidden flex items-center">
         <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[500px] bg-onae-navy/5 rounded-full blur-[160px] pointer-events-none" />
-        
+
         <div className="max-w-7xl mx-auto w-full relative z-10">
           <div className="mb-12 md:mb-24">
             <h2 className="text-2xl sm:text-4xl md:text-7xl font-poppins font-bold tracking-tighter mb-6 md:mb-8 leading-[1.0] md:leading-[0.95] text-onae-black">
@@ -52,7 +52,7 @@ export default function AboutUs() {
               <br />
               <InsideOutText text="through light." className="block text-onae-black/40" />
             </h2>
-            
+
             <InsideOutElement delay={0.3}>
               <p className="text-lg md:text-2xl text-onae-black/60 font-redhat leading-relaxed max-w-3xl mt-6">
                 ONAÈ is a design-first architectural lighting consultancy.
@@ -78,7 +78,7 @@ export default function AboutUs() {
               <br />
               <InsideOutText text="The Vision." className="block text-onae-black/40" />
             </h2>
-            
+
             <InsideOutElement delay={0.3}>
               <p className="text-lg md:text-2xl text-onae-black/60 font-redhat leading-relaxed max-w-3xl mt-6">
                 We don't just specify fixtures; we design experiences. Our approach begins
@@ -104,7 +104,7 @@ export default function AboutUs() {
               <br />
               <InsideOutText text="The Craft." className="block text-onae-black/40" />
             </h2>
-            
+
             <InsideOutElement delay={0.3}>
               <p className="text-lg md:text-2xl text-onae-black/60 font-redhat leading-relaxed max-w-3xl mt-6">
                 Based in Dubai, we navigate the complex intersection of aesthetics
@@ -118,3 +118,5 @@ export default function AboutUs() {
     </div>
   );
 }
+
+export default AboutUs;

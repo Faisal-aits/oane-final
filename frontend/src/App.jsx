@@ -104,7 +104,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <ScrollToTop />
       <SmoothScrolling />
       <AnimatePresence mode="wait">

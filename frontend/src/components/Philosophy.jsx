@@ -103,7 +103,7 @@ const Philosophy = () => {
     <section
       id="philosophy"
       ref={sectionRef}
-      className="parallax-section bg-[#1A1A1A] overflow-hidden"
+      className="parallax-section bg-transparent overflow-hidden"
     >
       {/* Background decorations — parallax */}
       <motion.div

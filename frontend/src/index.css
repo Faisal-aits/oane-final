@@ -18,61 +18,54 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  cursor: none !important;
 }
 
 html {
-  overflow-x: hidden;
+}
+
+html, body {
+  width: 100%;
 }
 
 body {
   background-color: var(--black);
   color: var(--white);
   font-family: 'Red Hat Display', sans-serif;
-  overflow-x: hidden;
   cursor: none;
+  touch-action: pan-y;
+}
+
+#root {
+  width: 100%;
+  position: relative;
+  touch-action: pan-y;
 }
 
 /* ── Custom Cursor ────────────────────────────────────────── */
-.cursor-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--red);
-  border-radius: 50%;
+.cursor-logo {
+  width: 24px;
+  height: 24px;
   position: fixed;
   top: 0; left: 0;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  transition: transform 0.1s ease, background 0.2s ease;
   mix-blend-mode: difference;
+  transition: width 0.3s ease, height 0.3s ease;
 }
 
-.cursor-ring {
+.cursor-logo.hovered {
   width: 36px;
   height: 36px;
-  border: 1.5px solid rgba(222, 59, 43, 0.6);
-  border-radius: 50%;
-  position: fixed;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
-}
-
-.cursor-ring.hovered {
-  width: 60px;
-  height: 60px;
-  border-color: var(--red);
 }
 
 /* Hide custom cursor on touch/mobile screens to optimize mobile UX */
 @media (max-width: 767px) {
-  .cursor-dot,
-  .cursor-ring {
+  .cursor-logo {
     display: none !important;
   }
-  body {
+  * {
     cursor: auto !important;
   }
 }

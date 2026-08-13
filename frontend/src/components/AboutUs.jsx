@@ -1,120 +1,133 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { useParallax } from '../hooks/useParallax.js';
-import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
+import { InsideOutText } from './InsideOut.jsx';
+import { LampContainer } from './Lamp.jsx';
+
+const FadeInContent = ({ children, delay = 0, className = "" }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-10%" }}
+    transition={{ duration: 0.8, delay: delay, ease: "easeOut" }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
 
 const AboutUs = () => {
-  const { ref: containerRef, bgY, contentY, opacity: aboutOpacity } = useParallax(60, 100);
-
   return (
-    <div id="about" ref={containerRef} className="bg-black overflow-hidden relative grain-overlay">
-      {/* SECTION 1: ONLY "About Us" — Max Negative Space */}
-      <section className="relative min-h-screen bg-black text-white flex items-center overflow-hidden px-6 md:px-12">
-        <motion.div
-          style={{ y: bgY }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-onae-red/3 rounded-full blur-[180px] pointer-events-none"
-        />
+    <div className="relative bg-transparent text-white w-full">
 
-        {/* Outer: scroll-driven parallax */}
-        <motion.div
-          style={{ y: contentY, opacity: aboutOpacity }}
-          className="max-w-7xl mx-auto w-full z-10 flex justify-start"
-        >
-          {/* Inside-to-Outside Text Entrance */}
-          <h2 className="text-left">
-            <InsideOutText
-              text="ABOUT US"
-              className="text-onae-red text-xl sm:text-3xl md:text-5xl font-poppins font-bold tracking-[0.2em] sm:tracking-[0.3em] md:tracking-[0.4em] uppercase"
-            />
-          </h2>
-        </motion.div>
+      {/* SCROLLABLE CONTENT LAYER */}
+      <div className="relative z-10">
 
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-10"
-        >
-          <span className="text-[10px] tracking-widest uppercase text-white/40">Scroll to explore</span>
-          <div className="w-px h-12 bg-gradient-to-b from-onae-red/40 to-transparent" />
-        </motion.div>
-      </section>
+        {/* SECTION 1: LAMP HERO ─────────────────────────────── */}
+        <LampContainer>
+          {/* Text starts 50px below, rises up as light expands */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.1 }}
+            transition={{ delay: 0.5, duration: 1.0, ease: 'easeInOut' }}
+            className=" relative bottom-[143px] flex flex-col items-center gap-5 text-center"
+          >
 
-      {/* SECTION 2: Heading + Description */}
-      <section className="relative min-h-screen py-20 md:py-32 px-6 md:px-12 bg-onae-offwhite text-onae-black overflow-hidden flex items-center">
-        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[500px] bg-onae-navy/5 rounded-full blur-[160px] pointer-events-none" />
+            {/* Main heading */}
+            <h1
+              className="font-poppins font-bold tracking-[0.12em] leading-none text-white uppercase"
+              style={{ fontSize: 'clamp(1.8rem, 4vw, 3.5rem)' }}
+            >
+              About Us
+            </h1>
 
-        <div className="max-w-7xl mx-auto w-full relative z-10">
-          <div className="mb-12 md:mb-24">
-            <h2 className="text-2xl sm:text-4xl md:text-7xl font-poppins font-bold tracking-tighter mb-6 md:mb-8 leading-[1.0] md:leading-[0.95] text-onae-black">
-              <InsideOutText text="Sculpting space" className="block text-onae-black" />
-              <br />
-              <InsideOutText text="through light." className="block text-onae-black/40" />
-            </h2>
+            {/* Sub-line */}
+            <p className="font-redhat text-white/40 tracking-[0.15em] uppercase text-[10px] md:text-xs">
+              Architectural lighting consultancy · Dubai
+            </p>
 
-            <InsideOutElement delay={0.3}>
-              <p className="text-lg md:text-2xl text-onae-black/60 font-redhat leading-relaxed max-w-3xl mt-6">
-                ONAÈ is a design-first architectural lighting consultancy.
-                We blend artistic vision with technical precision to create
-                atmospheres that resonate and inspire.
-              </p>
-            </InsideOutElement>
+            {/* Scroll cue — fades in slightly later */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.4, duration: 1 }}
+              className="absolute top-[350px] flex flex-col items-center gap-3 mt-6"
+            >
+              <span className="text-[9px] tracking-widest uppercase text-white/30">
+                Scroll to explore
+              </span>
+              <div className="w-px h-10 bg-gradient-to-b from-[#34A0E7]/60 to-transparent" />
+            </motion.div>
+          </motion.div>
+        </LampContainer>
+
+        {/* SECTION 2: HEADING + DESCRIPTION */}
+        <section className="min-h-[100dvh] flex items-center px-6 md:px-12 py-20 md:py-32">
+          <div className="max-w-7xl mx-auto w-full">
+            <div className="mb-12 md:mb-24">
+              <FadeInContent>
+                <h2 className="text-2xl sm:text-4xl md:text-7xl font-poppins font-bold tracking-tighter mb-6 md:mb-8 leading-[1.0] md:leading-[0.95]">
+                  <span className="block text-white">Sculpting space</span>
+                  <span className="block text-white/40">through light.</span>
+                </h2>
+              </FadeInContent>
+
+              <FadeInContent delay={0.2}>
+                <p className="text-lg md:text-2xl text-white/60 font-redhat leading-relaxed max-w-3xl mt-6">
+                  ONAÈ is a architectural lighting consultancy.
+                  We blend artistic vision with technical precision to create
+                  atmospheres that resonate and inspire.
+                </p>
+              </FadeInContent>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* SECTION 3: APPROACH / THE VISION (Full Screen, High Negative Space, Card-less) */}
-      <section className="relative min-h-screen py-20 md:py-32 px-6 md:px-12 bg-onae-offwhite text-onae-black overflow-hidden flex items-center">
-        <motion.div
-          style={{ y: bgY }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-onae-red/5 rounded-full blur-[180px] pointer-events-none"
-        />
+        {/* SECTION 3: APPROACH / THE VISION */}
+        <section className="min-h-[100dvh] flex items-center px-6 md:px-12 py-20 md:py-32">
+          <div className="max-w-7xl mx-auto w-full">
+            <div className="mb-12 md:mb-24">
+              <FadeInContent>
+                <h2 className="text-2xl sm:text-4xl md:text-7xl font-poppins font-bold tracking-tighter mb-6 md:mb-8 leading-[1.0] md:leading-[0.95]">
+                  <span className="block text-white">Approach</span>
+                  <span className="block text-white/40">The Vision.</span>
+                </h2>
+              </FadeInContent>
 
-        <div className="max-w-7xl mx-auto w-full relative z-10">
-          <div className="mb-12 md:mb-24">
-            <h2 className="text-2xl sm:text-4xl md:text-7xl font-poppins font-bold tracking-tighter mb-6 md:mb-8 leading-[1.0] md:leading-[0.95] text-onae-black">
-              <InsideOutText text="Approach" className="block text-onae-black" />
-              <br />
-              <InsideOutText text="The Vision." className="block text-onae-black/40" />
-            </h2>
-
-            <InsideOutElement delay={0.3}>
-              <p className="text-lg md:text-2xl text-onae-black/60 font-redhat leading-relaxed max-w-3xl mt-6">
-                We don't just specify fixtures; we design experiences. Our approach begins
-                with the architecture, understanding the interplay of shadow and texture
-                to reveal the soul of every space.
-              </p>
-            </InsideOutElement>
+              <FadeInContent delay={0.2}>
+                <p className="text-lg md:text-2xl text-white/60 font-redhat leading-relaxed max-w-3xl mt-6">
+                  We don't just specify fixtures; we design experiences. Our approach begins
+                  with the architecture, understanding the interplay of shadow and texture
+                  to reveal the soul of every space.
+                </p>
+              </FadeInContent>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* SECTION 4: PROCESS / THE CRAFT (Full Screen, High Negative Space, Card-less) */}
-      <section className="relative min-h-screen py-20 md:py-32 px-6 md:px-12 bg-onae-offwhite text-onae-black overflow-hidden flex items-center">
-        <motion.div
-          style={{ y: bgY }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-onae-navy/5 rounded-full blur-[180px] pointer-events-none"
-        />
+        {/* SECTION 4: PROCESS / THE CRAFT */}
+        <section className="min-h-[100dvh] flex items-center px-6 md:px-12 py-20 md:py-32">
+          <div className="max-w-7xl mx-auto w-full">
+            <div className="mb-12 md:mb-24">
+              <FadeInContent>
+                <h2 className="text-2xl sm:text-4xl md:text-7xl font-poppins font-bold tracking-tighter mb-6 md:mb-8 leading-[1.0] md:leading-[0.95]">
+                  <span className="block text-white">Process</span>
+                  <span className="block text-white/40">The Craft.</span>
+                </h2>
+              </FadeInContent>
 
-        <div className="max-w-7xl mx-auto w-full relative z-10">
-          <div className="mb-12 md:mb-24">
-            <h2 className="text-2xl sm:text-4xl md:text-7xl font-poppins font-bold tracking-tighter mb-6 md:mb-8 leading-[1.0] md:leading-[0.95] text-onae-black">
-              <InsideOutText text="Process" className="block text-onae-black" />
-              <br />
-              <InsideOutText text="The Craft." className="block text-onae-black/40" />
-            </h2>
-
-            <InsideOutElement delay={0.3}>
-              <p className="text-lg md:text-2xl text-onae-black/60 font-redhat leading-relaxed max-w-3xl mt-6">
-                Based in Dubai, we navigate the complex intersection of aesthetics
-                and technology. From conceptual sketches to final commissioning,
-                we ensure light is an integral part of the architectural narrative.
-              </p>
-            </InsideOutElement>
+              <FadeInContent delay={0.2}>
+                <p className="text-lg md:text-2xl text-white/60 font-redhat leading-relaxed max-w-3xl mt-6">
+                  Based in Dubai, we navigate the complex intersection of aesthetics
+                  and technology. From conceptual sketches to final commissioning,
+                  we ensure light is an integral part of the architectural narrative.
+                </p>
+              </FadeInContent>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+      </div>
     </div>
   );
 }

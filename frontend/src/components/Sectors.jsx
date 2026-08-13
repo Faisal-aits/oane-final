@@ -1,106 +1,104 @@
 import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { useParallax } from '../hooks/useParallax.js';
-import { InsideOutText, InsideOutElement } from './InsideOut.jsx';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { InsideOutText } from './InsideOut.jsx';
+
+import imgHospitality from '../assets/Hotel 2.jpg';
+import imgRestaurant from '../assets/Restaurant 2.jpg';
+import imgCommercial from '../assets/Commercial 1.jpg';
+import imgResidential from '../assets/Residential 1.jpg';
+import imgRetail from '../assets/Retail 2.jpg';
+import imgCultural from '../assets/Cultural 1.jpg';
+import imgFacade from '../assets/Facade 2.jpg';
+import imgMasterplanning from '../assets/Masterplanning 2.jpg';
 
 const SECTORS = [
-  'Hospitality & Hotels',
-  'Restaurants & F&B',
-  'Commercial Offices',
-  'Residential',
-  'Retail',
-  'Cultural & Public Spaces',
-  'Facades & Landscapes',
-  'Masterplanning',
+  { id: 1, title: 'Hospitality & Hotels', image: imgHospitality },
+  { id: 2, title: 'Restaurants & F&B', image: imgRestaurant },
+  { id: 3, title: 'Commercial Offices', image: imgCommercial },
+  { id: 4, title: 'Residential', image: imgResidential },
+  { id: 5, title: 'Retail', image: imgRetail },
+  { id: 6, title: 'Cultural & Public Spaces', image: imgCultural },
+  { id: 7, title: 'Facades & Landscapes', image: imgFacade },
+  { id: 8, title: 'Masterplanning', image: imgMasterplanning },
 ];
 
-const Sectors = () => {
-  const headRef = useRef(null);
-  const listRef = useRef(null);
-  const headVisible = useInView(headRef, { once: true, margin: '-80px' });
-  const listVisible = useInView(listRef, { once: true, margin: '-60px' });
+const SectorCard = ({ sector, index }) => {
+  const containerRef = useRef(null);
+  
+  // Track scroll for parallax effect on the image/background
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
 
-  const { ref: sectionRef, bgY, contentY } = useParallax(60, 100);
-
-  const totalSectors = SECTORS.length;
-  const centerIndex = (totalSectors - 1) / 2;
+  // Background moves slightly slower than the container (parallax)
+  const imageY = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
+  
+  // Text moves slightly faster
+  const textY = useTransform(scrollYProgress, [0, 1], ["20%", "-20%"]);
 
   return (
-    <section
-      id="sectors"
-      ref={sectionRef}
-      className="parallax-section bg-[#1A1A1A] overflow-hidden"
-    >
-      {/* Parallax background geometry */}
-      <motion.div
-        style={{ y: bgY }}
-        className="absolute right-0 top-0 h-full w-1/2 pointer-events-none overflow-hidden"
-        aria-hidden
-      >
-        <div className="absolute top-1/4 right-8 w-[1px] h-[60%] bg-gradient-to-b from-transparent via-[#DE3B2B]/15 to-transparent" />
-        <div className="absolute top-1/3 right-20 w-[1px] h-[40%] bg-gradient-to-b from-transparent via-[#194688]/15 to-transparent" />
-        <div className="absolute top-1/2 right-36 w-[1px] h-[30%] bg-gradient-to-b from-transparent via-[#34A0E7]/10 to-transparent" />
+    <div ref={containerRef} className="relative w-full h-[80vh] md:h-[100dvh] overflow-hidden mb-4 md:mb-10 rounded-2xl group cursor-pointer border border-white/5">
+      {/* Parallax Background */}
+      <motion.div style={{ y: imageY }} className="absolute inset-0 w-full h-[130%] -top-[15%] will-change-transform transform-gpu">
+        {sector.image ? (
+          <img 
+            src={sector.image} 
+            alt={sector.title} 
+            className="w-full h-full object-cover transform-gpu" 
+          />
+        ) : (
+          <div className="w-full h-full bg-[#0a0a0a] group-hover:bg-[#1a1a1a] transition-colors duration-700" />
+        )}
+        {/* Performance-friendly darkening overlay (replaces CSS filter) */}
+        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-700 pointer-events-none" />
+        {/* Subtle overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />
       </motion.div>
 
-      <motion.div style={{ y: contentY }} className="relative z-10 section-pad max-w-[1440px] mx-auto">
+      {/* Parallax Text */}
+      <motion.div 
+        style={{ y: textY }}
+        className="absolute inset-0 flex flex-col justify-end p-8 md:p-16 z-10"
+      >
+        <p className="font-poppins text-[#DE3B2B] text-xs md:text-sm tracking-[0.3em] uppercase mb-4">
+          {String(index + 1).padStart(2, '0')} — SECTOR
+        </p>
+        <h2 className="font-poppins font-bold text-white text-4xl md:text-7xl leading-tight mb-2">
+          {sector.title}
+        </h2>
+      </motion.div>
+    </div>
+  );
+};
+
+const Sectors = () => {
+  return (
+    <section id="sectors" className="relative w-full bg-transparent z-10 px-4 md:px-8 py-20">
+      <div className="max-w-[1600px] mx-auto">
         {/* Header */}
-        <div ref={headRef} className="mb-14">
-          <div className="mb-6">
-            <InsideOutText
-              text="Sectors"
-              className="section-label block"
-            />
-          </div>
-          <h2 className="section-heading-light max-w-md">
+        <div className="mb-20 px-4">
+          <InsideOutText
+            text="Sectors"
+            className="section-label block mb-6"
+          />
+          <h2 className="section-heading-light max-w-md mb-8">
             <InsideOutText text="Collaborating across disciplines." className="block text-white" />
           </h2>
+          <p className="font-redhat text-[#999] max-w-2xl leading-relaxed text-sm md:text-base">
+            "We work alongside architects, interior designers, MEP consultancies, developers, and
+            lighting suppliers. ONAÈ is designed to complete the project team — not replace any
+            part of it."
+          </p>
         </div>
 
-        {/* Sector list — large stacked typography */}
-        <div ref={listRef} className="border-t border-white/8">
-          {SECTORS.map((sector, i) => {
-            const distanceFromCenter = Math.abs(i - centerIndex);
-            const staggerDelay = distanceFromCenter * 0.1;
-
-            return (
-              <motion.div
-                key={sector}
-                initial={{ opacity: 0, scale: 0.96, filter: 'blur(6px)' }}
-                animate={listVisible ? { opacity: 1, scale: 1, filter: 'blur(0px)' } : {}}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: staggerDelay }}
-                className="group flex items-center justify-between py-5 border-b border-white/8 cursor-default"
-              >
-                <span
-                  className="font-poppins font-light text-white group-hover:text-[#DE3B2B] transition-colors duration-300"
-                  style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)' }}
-                >
-                  <InsideOutText text={sector} delay={staggerDelay + 0.1} />
-                </span>
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  whileHover={{ scale: 1, opacity: 1 }}
-                  className="font-poppins text-xs tracking-[0.2em] text-[#DE3B2B] opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:block"
-                >
-                  {String(i + 1).padStart(2, '0')}
-                </motion.span>
-              </motion.div>
-            );
-          })}
+        {/* Sector Cards */}
+        <div className="flex flex-col">
+          {SECTORS.map((sector, i) => (
+            <SectorCard key={sector.id} sector={sector} index={i} />
+          ))}
         </div>
-
-        {/* Collaboration statement */}
-        <motion.p
-          initial={{ opacity: 0, scale: 0.95, filter: 'blur(8px)' }}
-          animate={listVisible ? { opacity: 1, scale: 1, filter: 'blur(0px)' } : {}}
-          transition={{ delay: centerIndex * 0.1 + 0.3, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="font-redhat text-[#999] mt-12 max-w-2xl leading-relaxed"
-          style={{ fontSize: 'clamp(0.95rem, 1.4vw, 1.1rem)' }}
-        >
-          "We work alongside architects, interior designers, MEP consultancies, developers, and
-          lighting suppliers. ONAÈ is designed to complete the project team — not replace any
-          part of it."
-        </motion.p>
-      </motion.div>
+      </div>
     </section>
   );
 }

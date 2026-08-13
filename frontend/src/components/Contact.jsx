@@ -9,7 +9,7 @@ const CONTACT_DETAILS = [
   { label: 'Email', value: 'hello@onae.ae', href: 'mailto:hello@onae.ae' },
   { label: 'Phone', value: '+971 — — — — — —', href: 'tel:+971000000000' },
   { label: 'Location', value: 'Dubai, United Arab Emirates', href: null },
-  { label: 'Instagram', value: '@onae.light', href: 'https://instagram.com/onae.light' },
+  { label: 'Instagram', value: '@onae_lighting', href: 'https://www.instagram.com/onae_lighting?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==' },
   { label: 'LinkedIn', value: 'ONAÈ Lighting Design', href: 'https://linkedin.com' },
 ];
 

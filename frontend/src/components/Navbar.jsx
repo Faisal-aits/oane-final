@@ -1,187 +1,293 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import logoFull from '../assets/onae logo OG.png';
 
+/* ─── Nav data ───────────────────────────────────────────── */
 const NAV_LINKS = [
-  { path: '/about', label: 'About' },
-  { path: '/services', label: 'Services' },
-  { path: '/work', label: 'Work' },
-  { path: '/contact', label: 'Contact', isButton: true },
+  { path: '/work',     label: 'Work'     },
+  { path: '/about',    label: 'About'    },
+  { path: '#',         label: 'Ideas'    },
+  { path: '/contact',  label: 'Contact'  },
 ];
 
+/* ─── Slide animation ────────────────────────────────────── */
+const SLIDE = {
+  initial: { x: 'calc(100% + 120px)' },
+  enter:   { x: '0%', transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } },
+  exit:    { x: 'calc(100% + 120px)', transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } },
+};
+
+/* ─── Curved left edge ───────────────────────────────────── */
+const Curve = () => {
+  const h = window.innerHeight;
+  const initial = `M100 0 L200 0 L200 ${h} L100 ${h} Q-100 ${h / 2} 100 0`;
+  const target  = `M100 0 L200 0 L200 ${h} L100 ${h} Q100 ${h / 2} 100 0`;
+
+  return (
+    <svg
+      className="absolute top-0 -left-[99px] w-[100px] h-full stroke-none pointer-events-none"
+      style={{ fill: '#0a0a0a' }}
+    >
+      <motion.path
+        variants={{
+          initial: { d: initial },
+          enter:   { d: target,  transition: { duration: 1,   ease: [0.76, 0, 0.24, 1] } },
+          exit:    { d: initial, transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } },
+        }}
+        initial="initial"
+        animate="enter"
+        exit="exit"
+      />
+    </svg>
+  );
+};
+
+/* ─── Nav item with letter-stagger ──────────────────────── */
+const NavItem = ({ path, label, index, setOpen }) => {
+  const { pathname } = useLocation();
+  const isActive = pathname === path;
+
+  return (
+    <motion.div
+      initial="initial"
+      whileHover="whileHover"
+      className="flex items-center border-b border-white/10 py-5"
+    >
+      <Link
+        to={path}
+        onClick={(e) => {
+          if (path === '#') e.preventDefault();
+          setOpen(false);
+        }}
+        className="flex items-center gap-4 w-full"
+      >
+        <span className="text-white/25 text-lg font-light w-7 shrink-0 font-poppins">
+          {String(index).padStart(2, '0')}
+        </span>
+        <motion.span
+          variants={{ initial: { x: 0 }, whileHover: { x: -10 } }}
+          transition={{ type: 'spring', staggerChildren: 0.04, delayChildren: 0.05 }}
+          className={`text-3xl font-extralight tracking-wide font-poppins uppercase ${
+            isActive ? 'text-[#DE3B2B]' : 'text-white'
+          }`}
+        >
+          {label.split('').map((ch, i) => (
+            <motion.span
+              key={i}
+              variants={{ initial: { x: 0 }, whileHover: { x: 10 } }}
+              transition={{ type: 'spring' }}
+              className="inline-block"
+            >
+              {ch === ' ' ? '\u00A0' : ch}
+            </motion.span>
+          ))}
+        </motion.span>
+      </Link>
+    </motion.div>
+  );
+};
+
+/* ─── Curved slide panel ────────────────────────────────── */
+const CurvedPanel = ({ open, setOpen }) => (
+  <AnimatePresence mode="wait">
+    {open && (
+      <motion.div
+        variants={SLIDE}
+        initial="initial"
+        animate="enter"
+        exit="exit"
+        className="fixed right-0 top-0 h-[100dvh] w-[85vw] max-w-sm z-[110] bg-[#0a0a0a] flex flex-col"
+      >
+        <Curve />
+
+        <div className="flex flex-col h-full pt-24 pb-10 px-10">
+          {/* Label */}
+          <p className="text-white/30 text-[9px] uppercase tracking-[0.3em] font-poppins border-b border-white/10 pb-4 mb-2">
+            Navigation
+          </p>
+
+          {/* Links */}
+          <nav className="flex flex-col flex-1">
+            {NAV_LINKS.map((item, i) => (
+              <NavItem key={item.path} {...item} index={i + 1} setOpen={setOpen} />
+            ))}
+          </nav>
+
+          {/* Footer */}
+          <div className="border-t border-white/10 pt-6 flex flex-col gap-4">
+            <p className="font-poppins text-[9px] uppercase tracking-[0.2em] text-white/30 leading-relaxed">
+              Dubai · Architectural Lighting<br />
+              Specialising in immersive lighting experiences.
+            </p>
+            <div className="flex items-center gap-5">
+              <a href="https://www.instagram.com/onae_lighting" target="_blank" rel="noopener noreferrer"
+                className="text-white/40 hover:text-[#34A0E7] transition-colors font-poppins text-[9px] uppercase tracking-widest">
+                Instagram
+              </a>
+              <a href="https://www.linkedin.com/company/onae-lighting/" target="_blank" rel="noopener noreferrer"
+                className="text-white/40 hover:text-[#34A0E7] transition-colors font-poppins text-[9px] uppercase tracking-widest">
+                LinkedIn
+              </a>
+              <a href="mailto:hello@onae.ae"
+                className="text-white/40 hover:text-[#34A0E7] transition-colors font-poppins text-[9px] uppercase tracking-widest">
+                Email
+              </a>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
+/* ─── Backdrop ───────────────────────────────────────────── */
+const Backdrop = ({ open, setOpen }) => (
+  <AnimatePresence>
+    {open && (
+      <motion.div
+        key="backdrop"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.4 }}
+        onClick={() => setOpen(false)}
+        className="fixed inset-0 z-[109] bg-black/40 backdrop-blur-sm"
+      />
+    )}
+  </AnimatePresence>
+);
+
+/* ─── Main Navbar ────────────────────────────────────────── */
+/* Pages with a light (white/bright) background where the nav must use dark text */
+const LIGHT_BG_ROUTES = [];
+
 const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
 
-  // Sections with light backgrounds where text should be black
-  const lightSections = [];
-  const isLightSection = lightSections.includes(pathname);
+  /* true when the page has a light background */
+  const isLight = LIGHT_BG_ROUTES.includes(pathname);
 
-  // Scroll logic for dynamic shrinking/expanding based on direction
   useEffect(() => {
     const onScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY < 50) {
-        setScrolled(false);
-      } else if (currentScrollY > lastScrollY) {
+      if (window.scrollY > 20) {
         setScrolled(true);
       } else {
         setScrolled(false);
       }
       
-      setLastScrollY(currentScrollY);
+      // Only close if we are actively scrolling while it's open
+      if (window.scrollY > 50 && menuOpen) {
+        setMenuOpen(false);
+      }
     };
+    
+    // Check initial scroll position for background ONLY
+    if (window.scrollY > 20) {
+      setScrolled(true);
+    } else {
+      setScrolled(false);
+    }
 
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, [lastScrollY]);
+  }, [menuOpen]);
 
-  const textColor = isLightSection ? 'text-black' : 'text-white';
-  const borderColor = isLightSection ? 'border-black/10' : 'border-white/10';
-  const logoFilter = isLightSection ? 'brightness(0)' : 'none';
-  const navBg = isLightSection ? 'bg-white/40 shadow-sm' : 'bg-[#1A1A1A]/60 shadow-2xl';
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
+  // Dynamic navbar styling based on scroll and theme
+  const navStyles = scrolled
+    ? isLight
+      ? 'bg-white/30 backdrop-blur-xl border-b border-black/10 py-4 shadow-sm'
+      : 'bg-black/30 backdrop-blur-xl border-b border-white/10 py-4 shadow-sm'
+    : 'bg-transparent border-b border-transparent py-6';
 
   return (
     <>
-      <motion.nav
-        initial={{ y: -100, x: '-50%', opacity: 0 }}
-        animate={{ y: 0, x: '-50%', opacity: 1 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
-        className={`fixed top-6 left-1/2 z-50 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] px-6 rounded-full border flex items-center justify-between gap-6 lg:gap-10 backdrop-blur-xl
-          ${scrolled
-            ? 'w-auto min-w-[300px] max-w-[95%] py-2.5'
-            : 'w-[90%] max-w-5xl py-4'
-          } ${navBg} ${borderColor}`}
-      >
-        {/* Logo Section */}
+      {/* ── Dynamic top bar ── */}
+      <div className={`fixed top-0 left-0 w-full z-[100] flex items-center justify-between px-6 md:px-12 pointer-events-none transition-all duration-400 ${navStyles}`}>
+
+        {/* Logo */}
         <Link
           to="/"
           onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setMenuOpen(false); }}
-          className="flex items-center gap-2 group shrink-0"
+          className="pointer-events-auto flex items-center shrink-0 w-[70px] h-8 relative"
         >
-          <div className="relative w-7 h-7 flex items-center justify-center transition-transform duration-500 group-hover:rotate-12">
-            <motion.img
-              src={logo}
-              alt="ONAÈ"
-              style={{ filter: logoFilter }}
-              className="w-full h-full object-contain transition-all duration-500"
-            />
-          </div>
-          
-          <AnimatePresence>
-            {!scrolled && (
-              <motion.span
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: 'auto' }}
-                exit={{ opacity: 0, width: 0 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className={`font-poppins font-semibold text-[13px] tracking-[0.2em] overflow-hidden whitespace-nowrap transition-colors duration-500 ${textColor}`}
-              >
-                ONAÈ
-              </motion.span>
-            )}
-          </AnimatePresence>
+          <img
+            src={logoFull}
+            alt="ONAÈ"
+            className="h-[100px] w-auto object-contain absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none max-w-none"
+          />
         </Link>
 
-        {/* Desktop Links - Always Visible */}
-        <ul className="hidden md:flex items-center gap-6 lg:gap-10">
+        {/* Desktop nav links — centered */}
+        <nav className="pointer-events-auto hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
           {NAV_LINKS.map(link => (
-            <li key={link.path}>
-              <Link
-                to={link.path}
-                className={`font-poppins text-[10px] uppercase tracking-[0.2em] transition-all duration-500 relative group
-                  ${pathname === link.path ? (isLightSection ? 'text-black font-semibold' : 'text-white font-semibold') : (isLightSection ? 'text-black/50 hover:text-black' : 'text-white/40 hover:text-white')}
-                `}
-              >
-                {link.label}
-                <span className={`absolute -bottom-1 left-1/2 -translate-x-1/2 h-[2px] bg-[#DE3B2B] transition-all duration-500 rounded-full
-                  ${pathname === link.path ? 'w-1' : 'w-0 group-hover:w-1'}
-                `} />
-              </Link>
-            </li>
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`font-poppins text-[10px] uppercase tracking-[0.22em] transition-all duration-300 relative
+                ${ 
+                  isLight
+                    ? pathname === link.path
+                      ? 'text-[#DE3B2B]'
+                      : 'text-gray-500 hover:text-gray-900'
+                    : pathname === link.path
+                      ? 'text-[#DE3B2B]'
+                      : 'text-white/50 hover:text-white'
+                }
+              `}
+            >
+              {link.label}
+              {pathname === link.path && (
+                <motion.span
+                  layoutId="activeDot"
+                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#DE3B2B] rounded-full"
+                />
+              )}
+            </Link>
           ))}
-        </ul>
+        </nav>
 
-        {/* Action Button / Hamburger */}
-        <div className="flex items-center shrink-0">
+        {/* Right side — hamburger on all screen sizes */}
+        <div className="pointer-events-auto flex items-center">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className={`flex flex-col items-end gap-1 p-2 transition-all duration-500 ${textColor}`}
+            aria-label="Toggle menu"
+            className="flex flex-col items-center justify-center w-10 h-10 gap-[6px] bg-transparent border-0 p-1 relative z-[120]"
           >
             <motion.span
-              animate={menuOpen ? { rotate: 45, y: 4, width: '20px' } : { rotate: 0, y: 0, width: scrolled ? '16px' : '22px' }}
-              className={`h-[1.5px] rounded-full transition-all duration-500 ${isLightSection ? 'bg-black' : 'bg-white'}`}
+              animate={menuOpen ? { rotate: 45, y: 9 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="block rounded-sm"
+              style={{ width: '26px', height: '3px', backgroundColor: isLight ? '#1a1a1a' : '#ffffff' }}
             />
             <motion.span
-              animate={menuOpen ? { rotate: -45, y: -4, width: '20px' } : { rotate: 0, y: 0, width: scrolled ? '22px' : '14px' }}
-              className={`h-[1.5px] rounded-full transition-all duration-500 ${isLightSection ? 'bg-black' : 'bg-[#DE3B2B]'}`}
+              animate={menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+              transition={{ duration: 0.2 }}
+              className="block rounded-sm"
+              style={{ width: '26px', height: '3px', backgroundColor: isLight ? '#1a1a1a' : '#ffffff' }}
+            />
+            <motion.span
+              animate={menuOpen ? { rotate: -45, y: -9 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="block rounded-sm"
+              style={{ width: '26px', height: '3px', backgroundColor: isLight ? '#1a1a1a' : '#ffffff' }}
             />
           </button>
         </div>
-      </motion.nav>
+      </div>
 
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-40 bg-[#0D0D0D] flex flex-col items-center justify-center p-8 overflow-hidden"
-          >
-            {/* Background Text Decor */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none opacity-[0.03] text-[30vw] font-poppins font-bold whitespace-nowrap text-white">
-              ONAÈ
-            </div>
-
-            <ul className="relative z-10 flex flex-col items-center gap-6 text-center">
-              {NAV_LINKS.map((link, i) => (
-                <motion.li
-                  key={link.path}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + i * 0.1 }}
-                >
-                  <Link
-                    to={link.path}
-                    onClick={() => setMenuOpen(false)}
-                    className="group relative"
-                  >
-                    <span className="font-poppins text-3xl md:text-4xl font-semibold text-white/20 group-hover:text-[#DE3B2B] transition-colors duration-500 uppercase tracking-widest">
-                      {link.label}
-                    </span>
-                    <span className="absolute -left-6 top-1/2 -translate-y-1/2 text-[10px] font-poppins font-medium text-[#DE3B2B] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      0{i + 1}
-                    </span>
-                  </Link>
-                </motion.li>
-              ))}
-            </ul>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="absolute bottom-12 flex flex-col items-center gap-4 text-center"
-            >
-              <div className="w-12 h-[1px] bg-white/10" />
-              <p className="font-poppins text-[10px] uppercase tracking-[0.3em] text-white/40">
-                Dubai · Architectural Lighting
-              </p>
-              <a href="mailto:hello@onae.ae" className="font-poppins text-sm text-white hover:text-[#DE3B2B] transition-colors">
-                hello@onae.ae
-              </a>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* ── Curved slide panel + backdrop (mobile) ── */}
+      <Backdrop open={menuOpen} setOpen={setMenuOpen} />
+      <CurvedPanel open={menuOpen} setOpen={setMenuOpen} />
     </>
   );
-}
+};
 
 export default Navbar;

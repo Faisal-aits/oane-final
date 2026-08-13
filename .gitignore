@@ -5,8 +5,7 @@ node_modules/
 .env
 
 # Build files
-dist/
-frontend/dist/
+
 
 # Logs
 *.log
